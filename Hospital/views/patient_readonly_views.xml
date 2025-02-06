@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<odoo>
+
+
+    <record id="view_hospital_readonly_patient_tree" model="ir.ui.view">
+        <field name="name">hospital_readonly_patient_tree</field>
+        <field name="model">hospital.patient</field>
+        <field name="arch" type="xml">
+            <tree string="Patienttt" create="0" delete="0" edit="0" >
+                <field name="name"/>
+                <field name="gender" optional="hide"/>
+                <field name="DOB" optional="hide"/>
+            </tree>
+        </field>
+    </record>
+
+
+    <record id="view_hospital_readonly_patient_form" model="ir.ui.view">
+        <field name="name">hospital_readonly_patient_form</field>
+        <field name="model">hospital.patient</field>
+        <field name="arch" type="xml">
+            <form string="Patienttt" create="0" delete="0" edit="0">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="gender"/>
+                        </group>
+                        <group>
+                            <field name="DOB"/>
+                        </group>
+                    </group>
+
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" groups="base.group_user"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+    <record id="view_hospital_patient_readonly_search" model="ir.ui.view">
+        <field name="name">hospital_patient_readonly_search</field>
+        <field name="model">hospital.patient</field>
+        <field name="arch" type="xml">
+            <search string="Patient">
+                <field name="name"/>
+                <field name="DOB"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_by_gender" string="Gender" domain="[('gender','=','female')]"  context="{'group_by':'gender'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_hospital_readonly_patient" model="ir.actions.act_window">
+        <field name="name">View patient</field>
+        <field name="res_model">hospital.patient</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_hospital_patient_readonly_search"/>
+        <field name="view_ids"
+                   eval="[(5, 0, 0),
+                          (0, 0, {'view_mode': 'tree', 'view_id': ref('view_hospital_readonly_patient_tree')}),
+                          (0, 0, {'view_mode': 'form', 'view_id': ref('view_hospital_readonly_patient_form')})]"/>
+
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new patientt
+            </p>
+        </field>
+    </record>
+</odoo>

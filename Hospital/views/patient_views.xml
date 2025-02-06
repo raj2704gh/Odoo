@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<odoo>
+
+
+    <record id="view_hospital_patient_tree" model="ir.ui.view">
+        <field name="name">hospital_patient_tree</field>
+        <field name="model">hospital.patient</field>
+        <field name="arch" type="xml">
+            <tree string="Patienttt">
+                <field name="name"/>
+                <field name="gender" optional="show"/>
+                <field name="DOB" optional="show"/>
+                <field name="Total_amount" />
+                <field name="currency_id" />
+            </tree>
+        </field>
+    </record>
+
+
+    <record id="view_hospital_patient_form" model="ir.ui.view">
+        <field name="name">hospital_patient_tree</field>
+        <field name="model">hospital.patient</field>
+        <field name="arch" type="xml">
+            <form string="Patienttt">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="gender"/>
+                            <field name="weight" readonly="gender== 'female'"/>
+                            <field name="is_minor"/>
+                            <field name="guardian" invisible="is_minor==0" required="is_minor"/>
+                        </group>
+                        <group>
+                            <field name="DOB"/>
+                            <field name="tag_ids" widget="many2many_tags"/>
+                            <field name="Total_amount" />
+                            <field name="currency_id" />
+                            <field name="active" />
+                        </group>
+                    </group>
+
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" groups="base.group_user"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_hospital_patient_search" model="ir.ui.view">
+        <field name="name">hospital_patient_search</field>
+        <field name="model">hospital.patient</field>
+        <field name="arch" type="xml">
+            <search string="Patient">
+                <field name="name"/>
+                <field name="gender"/>
+                <field name="DOB"/>
+                <field name="guardian"/>
+                <filter string="Male" name="male_patients" domain="[('gender','=','male')]"/>
+                <!--                <separator/>-->
+                <filter string="female" name="female_patients" domain="[('gender','=','female')]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_by_gender" string="Gender"   context="{'group_by':'gender'}"/>
+                </group>
+                <!-- <searchpanel>
+                    <field name="gender" string="Genderr" enable_counters="1"/>
+                </searchpanel> -->
+            </search>
+        </field>
+    </record>
+
+    <record id="action_hospital_patient" model="ir.actions.act_window">
+        <field name="name">Pppatients</field>
+        <field name="res_model">hospital.patient</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_hospital_patient_search"/>
+        <field name="context">{"search_default_male_patients":0}</field>
+        <field name="view_ids"
+               eval="[(5, 0, 0),
+                          (0, 0, {'view_mode': 'tree', 'view_id': ref('view_hospital_patient_tree')}),
+                          (0, 0, {'view_mode': 'form', 'view_id': ref('view_hospital_patient_form')})]"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new patientt
+            </p>
+        </field>
+    </record>
+
+</odoo>

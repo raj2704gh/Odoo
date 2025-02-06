@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<odoo>
+    <record id="module_category_hospital" model="ir.module.category">
+        <field name="name">Hospital</field>
+        <field name="sequence">1</field>
+    </record>
+
+    <record id="group_hospital_receptionist" model="res.groups">
+        <field name="name">Receptionist</field>
+        <field name="category_id" ref="Hospital.module_category_hospital"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        <field name="comment">this user will have access to appointment</field>
+    </record>
+
+    <record id="group_hospital_doctors" model="res.groups">
+        <field name="name">Doctors</field>
+        <field name="category_id" ref="Hospital.module_category_hospital"/>
+        <field name="implied_ids" eval="[(4, ref('Hospital.group_hospital_receptionist'))]"/>
+        <field name="comment">this user will have acess to patient details</field>
+    </record>
+
+    <record id="receptionist_own_appoitmnet_rule" model="ir.rule">
+        <field name="name">receptionist:view own record</field>
+        <field name="model_id" ref="model_hospital_appointment"/>
+        <field name="domain_force">[("create_uid","=",user.id)]</field>
+        <field name="groups" eval="[Command.set([ref('Hospital.group_hospital_receptionist')])]"/>
+    </record>
+
+    <record id="doctor_view_all_rule" model="ir.rule">
+        <field name="name">docture:view all record</field>
+        <field name="model_id" ref="model_hospital_appointment"/>
+        <field name="domain_force">[]</field>
+        <field name="groups" eval="[Command.set([ref('Hospital.group_hospital_doctors')])]"/>
+    </record>
+
+</odoo>

@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<odoo>
+    <record id="view_hospital_appointment_tree" model="ir.ui.view">
+        <field name="name">hospital_appointment_tree</field>
+        <field name="model">hospital.appointment</field>
+        <field name="arch" type="xml">
+            <tree string="Appointment">
+                <field name="refrence"/>
+                <field name="patient_id"/>
+                <field name="date_appointment"/>
+                <field name="create_uid" groups="Hospital.group_hospital_doctors"/>
+                
+                <field name="note"/>
+            </tree>
+        </field>
+    </record>
+
+
+    <record id="view_hospital_appointment_form" model="ir.ui.view">
+        <field name="name">hospital_appointment_form</field>
+        <field name="model">hospital.appointment</field>
+        <field name="arch" type="xml">
+            <form string="Appointments">
+                <header>
+                    <button name="action_confirm" type="object" string="Confirm" invisible="state!='draft'"
+                            class="oe_highlight"/>
+                    <button name="action_ongoing" type="object" string="Ongoing" invisible="state!='confirm'"
+                            class="oe_highlight"/>
+                    <button name="action_done" type="object" string="Done" invisible="state!='ongoing'"
+                            class="oe_highlight"/>
+                    <button name="action_cancel" type="object" string="Canceled"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirm,ongoing,done"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="refrence" readonly="True"/>
+                            <field name="patient_id" />
+                            <field name="date_of_birth"/>
+                            <field name="date_appointment"/>
+                        </group>
+                        <group>
+                            <field name="total_qty"/>
+                            <field name="create_uid" groups="Hospital.group_hospital_doctors"/>
+                            <field name="reference_id"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page name="appointment_lines" string="Lines">
+                            <field name="appointment_line_ids">
+                                <tree editable="top">
+                                    <field name="product_id"/>
+                                    <field name="qty"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page name="appointment_lines2" string="Lines2">
+                            <field name="note"/>
+                        </page>
+                    </notebook>
+
+
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" groups="base.group_user"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_hospital_appointment_search" model="ir.ui.view">
+        <field name="name">hospital_appointment_search</field>
+        <field name="model">hospital.appointment</field>
+        <field name="arch" type="xml">
+            <search string="Appointment">
+                <field name="refrence"  filter_domain="['|', ('refrence', 'ilike', self), ('patient_id', 'ilike', self)]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_by_patient" string="Patient"   context="{'group_by':'patient_id'}"/>
+                </group>
+                <searchpanel>
+                    <field name="patient_id" string="Patient" enable_counters="1"/>
+                </searchpanel>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_hospital_appointment" model="ir.actions.act_window">
+        <field name="name">Appointment</field>
+        <field name="res_model">hospital.appointment</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_hospital_appointment_search"/>
+        <field name="view_ids"
+               eval="[(5, 0, 0),
+                          (0, 0, {'view_mode': 'tree', 'view_id': ref('view_hospital_appointment_tree')}),
+                          (0, 0, {'view_mode': 'form', 'view_id': ref('view_hospital_appointment_form')})]"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new patientt
+            </p>
+        </field>
+    </record>
+
+</odoo>
